@@ -1,0 +1,79 @@
+<mat-toolbar>
+    <mat-icon>account_circle</mat-icon>
+    Contatos
+</mat-toolbar>
+
+<mat-tab-group>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon>list</mat-icon>
+            Todos
+        </ng-template>
+        <mat-card>
+            <table mat-table [dataSource]="profiles" class="full-width">
+                <ng-container matColumnDef="photo">
+                    <th mat-header-cell *matHeaderCellDef>Perfil</th>
+                    <td mat-cell *matCellDef="let profile">
+                        <div *ngIf="profile.photo; else noPhoto">
+                            <img width="50" height="50" src="data:image/png;base64,{{profile.photo}}" (click)="showProfile(profile)">
+                        </div>
+                        <ng-template #noPhoto>
+                            <input type="file" name="photo" (change)="uploadPhoto($event, profile)">
+                        </ng-template>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>Id</th>
+                    <td mat-cell *matCellDef="let profile">{{profile.id}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nome</th>
+                    <td mat-cell *matCellDef="let profile">{{profile.name}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef>E-mail</th>
+                    <td mat-cell *matCellDef="let profile">{{profile.email}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="favorite">
+                    <th mat-header-cell *matHeaderCellDef>Favorito</th>
+                    <td mat-cell *matCellDef="let profile">
+                        <a href="#" (click)="favorite(profile)">
+                            <mat-icon>{{profile.favorite ? 'favorite' : 'favorite_border'}}</mat-icon>
+                        </a>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns:displayedColumns"></tr>
+            </table>
+            <mat-paginator [length]="totalElements" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="paginator($event)">
+            </mat-paginator>
+        </mat-card>
+    </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon>face</mat-icon>
+            Novo cadastro
+        </ng-template>
+        <mat-card class="half-width">
+            <mat-card-title>Novo Contato</mat-card-title>
+            <form [formGroup]="formGroup">
+                <mat-form-field class="full-width">
+                    <mat-label>Nome:</mat-label>
+                    <input formControlName="name" matInput placeholder="Digite seu nome">
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>E-mail:</mat-label>
+                    <input formControlName="email" matInput placeholder="Digite seu e-mail">
+                </mat-form-field>
+
+                <button [disabled]="!formGroup.valid" mat-raised-button color="primary" (click)="submit()">Adicionar</button>
+            </form>
+        </mat-card>
+    </mat-tab>
+</mat-tab-group>
